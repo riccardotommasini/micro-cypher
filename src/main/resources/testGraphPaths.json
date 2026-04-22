@@ -1,0 +1,85 @@
+{
+  "timestamp": 2,
+  "nodes": [
+    {
+      "id": 1,
+      "labels": ["Station"],
+      "properties": {
+        "station_id": 1
+      }
+    },
+    {
+      "id": 2,
+      "labels": ["Station"],
+      "properties": {
+        "station_id": 2
+      }
+    },
+    {
+      "id": 3,
+      "labels": ["Bike"],
+      "properties": {
+        "bike_id": 3
+      }
+    },
+    {
+      "id": 4,
+      "labels": ["City"],
+      "properties": {
+        "city_id": 4
+      }
+    },
+    {
+      "id": 5,
+      "labels": ["Bike"],
+      "properties": {
+        "bike_id": 5
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": 3,
+      "to": 1,
+      "labels": ["rentedAt"],
+      "properties": {
+        "permitted": "compliant",
+        "user_id": 100
+      }
+    },
+    {
+      "from": 5,
+      "to": 2,
+      "labels": ["rentedAt"],
+      "properties": {
+        "permitted": "compliant",
+        "user_id": 101
+      }
+    },
+    {
+      "from": 1,
+      "to": 4,
+      "labels": ["locatedIn"],
+      "properties": {
+        "region": "north"
+      }
+    },
+    {
+      "from": 2,
+      "to": 4,
+      "labels": ["locatedIn"],
+      "properties": {
+        "region": "north"
+      }
+    },
+    {
+      "from": 3,
+      "to": 2,
+      "labels": ["rentedAt"],
+      "properties": {
+        "permitted": "manual_review",
+        "user_id": 102
+      }
+    }
+  ]
+}

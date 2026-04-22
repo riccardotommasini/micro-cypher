@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/logical-plan.schema.json",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/$defs/all_nodes_scan" },
+    { "$ref": "#/$defs/node_by_label_scan" },
+    { "$ref": "#/$defs/expand_all" },
+    { "$ref": "#/$defs/var_length_expand" },
+    { "$ref": "#/$defs/filter" },
+    { "$ref": "#/$defs/projection" },
+    { "$ref": "#/$defs/produce_results" }
+  ],
+  "$defs": {
+    "expression": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "name"],
+          "properties": {
+            "type": { "const": "variable" },
+            "name": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "variable", "property"],
+          "properties": {
+            "type": { "const": "property" },
+            "variable": { "type": "string" },
+            "property": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "value"],
+          "properties": {
+            "type": { "const": "string" },
+            "value": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "value"],
+          "properties": {
+            "type": { "const": "integer" },
+            "value": { "type": "integer" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "operator", "left", "right"],
+          "properties": {
+            "type": { "const": "comparison" },
+            "operator": { "enum": ["=", "<>"] },
+            "left": { "$ref": "#/$defs/expression" },
+            "right": { "$ref": "#/$defs/expression" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "nodeVariables", "relationshipVariables"],
+          "properties": {
+            "type": { "const": "path" },
+            "nodeVariables": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "relationshipVariables": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "all_nodes_scan": {
+      "type": "object",
+      "required": ["type", "variable"],
+      "properties": {
+        "type": { "const": "all_nodes_scan" },
+        "variable": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "node_by_label_scan": {
+      "type": "object",
+      "required": ["type", "variable", "label"],
+      "properties": {
+        "type": { "const": "node_by_label_scan" },
+        "variable": { "type": "string" },
+        "label": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "expand_all": {
+      "type": "object",
+      "required": ["type", "source", "fromVariable", "relationshipVariable", "toVariable", "direction"],
+      "properties": {
+        "type": { "const": "expand_all" },
+        "source": { "$ref": "#" },
+        "fromVariable": { "type": "string" },
+        "relationshipVariable": { "type": "string" },
+        "toVariable": { "type": "string" },
+        "direction": { "enum": ["OUTGOING", "INCOMING", "BOTH"] },
+        "relationshipType": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "var_length_expand": {
+      "type": "object",
+      "required": ["type", "source", "fromVariable", "pathVariable", "toVariable", "direction", "minHops", "maxHops"],
+      "properties": {
+        "type": { "const": "var_length_expand" },
+        "source": { "$ref": "#" },
+        "fromVariable": { "type": "string" },
+        "pathVariable": { "type": "string" },
+        "toVariable": { "type": "string" },
+        "direction": { "enum": ["OUTGOING", "INCOMING", "BOTH"] },
+        "relationshipType": { "type": "string" },
+        "minHops": { "type": "integer", "minimum": 1 },
+        "maxHops": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "filter": {
+      "type": "object",
+      "required": ["type", "source", "predicate"],
+      "properties": {
+        "type": { "const": "filter" },
+        "source": { "$ref": "#" },
+        "predicate": { "$ref": "#/$defs/expression" }
+      },
+      "additionalProperties": false
+    },
+    "projection": {
+      "type": "object",
+      "required": ["type", "source", "items"],
+      "properties": {
+        "type": { "const": "projection" },
+        "source": { "$ref": "#" },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["alias", "expression"],
+            "properties": {
+              "alias": { "type": "string" },
+              "expression": { "$ref": "#/$defs/expression" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "produce_results": {
+      "type": "object",
+      "required": ["type", "source", "columns"],
+      "properties": {
+        "type": { "const": "produce_results" },
+        "source": { "$ref": "#" },
+        "columns": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
